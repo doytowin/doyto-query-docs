@@ -1,9 +1,11 @@
-# Page Query
+# 分页对象
 
-## 定义
-
-`PageQuery`实现了`Query`接口，定义了三个字段，
+查询对象需要继承`PageQuery`类以构造分页子句和排序子句。`PageQuery`类定义了三个字段，\
 其中，`PageNumber`和`PageSize`用于构建分页子句，`Sort` 用于构建排序子句。
+
+## 示例
+
+### 定义
 
 ```java
 @Getter
@@ -11,34 +13,13 @@
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageQuery implements DoytoQuery {
-
-    @SuppressWarnings("java:S5843")
-    protected static final String SORT_RX = "(\\w+,(asc|desc)|field\\(\\w+(,[\\w']+)++\\))(;(\\w+,(asc|desc)|field\\(\\w+(,[\\w']+)++\\)))*";
-    protected static final Pattern SORT_PTN = Pattern.compile(PageQuery.SORT_RX);
-
-    @Transient
-    private Integer pageNumber;
-
-    @Transient
-    private Integer pageSize;
-
-    /**
-     * Sorting field, format: field1,desc;field2,asc;field(col,'v1','v2')
-     */
-    @Transient
-    @jakarta.validation.constraints.Pattern(regexp = SORT_RX, groups = PageGroup.class)
-    private String sort;
-
-    @Transient
-    private LockMode lockMode;
-
-    // ...
+public class UserQuery extends PageQuery {
+    private Long idGt;
+    //...
 }
-
 ```
 
-## 分页示例
+### 分页
 
 ```java
 UserQuery userQuery = UserQuery.builder().build();
@@ -59,12 +40,14 @@ List<UserEntity> users = userDataAccess.query(userQuery);
 //SELECT id, score, memo FROM User LIMIT 10 OFFSET 100	
 ```
 
-## 排序示例
-
-`Sort`赋值的字符串需要符合正则表达式：`PageQuery.SORT_PTN`
+### 排序
 
 ```java
 UserQuery userQuery = UserQuery.builder().sort("id,desc;score,asc;memo").build();
 List<UserEntity> users = userDataAccess.query(userQuery);
 //SELECT id, score, memo FROM User ORDER BY id DESC, score ASC, memo
 ```
+
+{% hint style="info" %}
+赋值给`Sort`字段的字符串需要符合正则表达式：`PageQuery.SORT_PTN。`
+{% endhint %}

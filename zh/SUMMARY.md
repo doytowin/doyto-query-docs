@@ -6,33 +6,33 @@
 ## 基础用法 <a href="#basic" id="basic"></a>
 
 * [增删查改接口](basic/crud.md)
-* [中间表访问接口](basic/associative-sql.md)
+* [中间表访问接口](basic/association-service.md)
 * [数据库方言](basic/dialect.md)
 * [打印SQL日志](basic/print-sql-logs.md)
 
-## 实体对象映射 <a href="#entity-mapping" id="entity-mapping"></a>
+## 对象概念 <a href="#object-concepts" id="object-concepts"></a>
 
-* [实体对象](entity-mapping/entity-object.md)
-* [关联实体](entity-mapping/related-entities.md)
-* [分表增删查改](entity-mapping/sharding.md)
-* [单列自增](entity-mapping/self-increment.md)
+* [查询对象](object-concepts/query-object/README.md)
+  * [分页对象](object-concepts/query-object/page-query.md)
+  * [谓词后缀字段](object-concepts/query-object/predicate-suffix-field.md)
+  * [逻辑后缀字段](object-concepts/query-object/logic-suffix-field.md)
+  * [子查询字段](object-concepts/query-object/subquery-field.md)
+  * [ER关系字段](object-concepts/query-object/er-query-field.md)
+  * [自定义查询字段](object-concepts/query-object/custom-condition-field.md)
+* [实体对象](object-concepts/entity-object/README.md)
+  * [枚举字段](object-concepts/entity-object/enum-field.md)
+  * [分表](object-concepts/entity-object/sharding.md)
+* [视图对象](object-concepts/view-object/README.md)
+  * [列映射](object-concepts/view-object/column-mapping.md)
+* [聚合查询对象](object-concepts/having-object.md)
 
-## 查询对象映射 <a href="#query-mapping" id="query-mapping"></a>
+## Web
 
-* [查询对象构建](query-mapping/query-object)
-* [谓词后缀字段](query-mapping/predicate-suffix-field.md)
-* [逻辑后缀字段](query-mapping/logic-suffix-field.md)
-* [子查询字段](query-mapping/subquery-field.md)
-* [ER关系字段](query-mapping/er-query-field.md)
-* [自定义查询字段](query-mapping/custom-condition-field.md)
-* [分页对象](query-mapping/page-query.md)
+* [Controller](web/controller.md)
 
-## 聚合查询
+***
 
-* [视图对象](aggregate-query/view-object.md)
-* [Having对象](aggregate-query/having.md)
-* [外连接](aggregate-query/outer-join.md)
-
+* [Service](service.md)
 
 ## 相关资源 <a href="#related-resources" id="related-resources"></a>
 

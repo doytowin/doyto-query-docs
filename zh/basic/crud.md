@@ -1,4 +1,4 @@
-# 数据访问接口
+# 增删查改接口
 
 ## 接口定义
 
@@ -41,21 +41,21 @@ public interface DataAccess<E extends Persistable<I>, I extends Serializable, Q 
 
 `DataAccess`接口中的所有方法一共只接收4类参数：
 
-- `id` 实体的主键；
-- `IdWrapper` 分表主键对象，用于分表查询；
-- `Entity` 实体对象，用于映射表名和列名；
-- `Query` 查询对象，用于动态构造查询条件和分页语句，需要继承`PageQuery`
+* `id` 实体的主键；
+* `IdWrapper` 分表主键对象，用于分表查询；
+* `Entity` 实体对象，用于映射表名和列名；
+* `Query` 查询对象，用于动态构造查询条件和分页语句，需要继承`PageQuery`
 
 对于`Entity`的定义，请参考：
 
-{% content-ref url="../entity-mapping/entity-object.md" %}
-[entity-object.md](../entity-mapping/entity-object.md)
+{% content-ref url="../object-concepts/entity-object/" %}
+[entity-object](../object-concepts/entity-object/)
 {% endcontent-ref %}
 
 对于`Query`的定义，请参考：
 
-{% content-ref url="../query-mapping/query-object/" %}
-[query-object](../query-mapping/query-object/)
+{% content-ref url="../object-concepts/query-object/" %}
+[query-object](../object-concepts/query-object/)
 {% endcontent-ref %}
 
 ## 示例
@@ -106,6 +106,7 @@ public class UserQuery extends PageQuery {
 ### Get
 
 根据id查询数据：
+
 ```java
 UserEntity userEntity = userDataAccess.get(3L);
 // SQL="SELECT id, name, score, memo, deleted FROM t_user WHERE id = ?" args="[3]"
@@ -114,6 +115,7 @@ UserEntity userEntity = userDataAccess.get(3L);
 ### Query
 
 根据查询条件查询数据：
+
 ```java
 // 示例 1
 UserQuery userQuery = UserQuery.builder().scoreLt(80).build();
@@ -164,6 +166,7 @@ List<UserEntity> users = userDataAccess.query(userQuery);
 ### Count
 
 根据查询条件查询数据的总数：
+
 ```java
 UserQuery userQuery = UserQuery.builder().scoreLt(60).build();
 long count = userDataAccess.count(userQuery);
@@ -173,6 +176,7 @@ long count = userDataAccess.count(userQuery);
 ### Page
 
 根据查询条件查询数据和总数：
+
 ```java
 UserQuery userQuery = UserQuery.builder().scoreLt(80).pageSize(20).build();
 PageList<UserEntity> page = userDataAccess.page(userQuery);
@@ -183,6 +187,7 @@ PageList<UserEntity> page = userDataAccess.page(userQuery);
 ### Delete
 
 根据id删除数据：
+
 ```java
 int deletedCount = userDataAccess.delete(3L);
 // SQL="DELETE FROM t_user WHERE id = ?" args="[3]"
@@ -191,6 +196,7 @@ int deletedCount = userDataAccess.delete(3L);
 ### DeleteByQuery
 
 根据查询条件删除数据：
+
 ```java
 UserQuery userQuery = UserQuery.builder().scoreLt(80).build();
 int deletedCount = userDataAccess.delete(userQuery);
@@ -200,6 +206,7 @@ int deletedCount = userDataAccess.delete(userQuery);
 ### Create
 
 创建单条数据：
+
 ```java
 UserEntity user = new UserEntity();
 user.setName("John");
@@ -212,6 +219,7 @@ userDataAccess.create(user);
 ### CreateMulti
 
 创建多条数据：
+
 ```java
 UserEntity user1 = new UserEntity();
 user1.setName("John");
@@ -229,6 +237,7 @@ int createdCount = userDataAccess.batchInsert(entities);
 ### Update
 
 根据id更新所有字段：
+
 ```java
 UserEntity user = new UserEntity();
 user.setId(2L);
@@ -241,6 +250,7 @@ int updatedCount = userDataAccess.update(user);
 ### Patch
 
 根据id更新所有非空字段：
+
 ```java
 UserEntity user = new UserEntity();
 user.setId(2L);
@@ -252,6 +262,7 @@ int patchedCount = userDataAccess.patch(user);
 ### PatchByQuery
 
 根据查询条件更新所有非空字段：
+
 ```java
 UserEntity user = new UserEntity();
 user.setMemo("Add Memo");
