@@ -60,7 +60,7 @@ public interface DataAccess<E extends Persistable<I>, I extends Serializable, Q 
 
 ## 示例
 
-以下接口调用示例基于实体对象`UserEntity`和查询对象`UserQuery`：
+以下接口调用基于实体对象`UserEntity`和查询对象`UserQuery`进行演示：
 
 ```java
 @Getter
@@ -73,8 +73,11 @@ public class UserEntity extends AbstractCommonEntity<Long, Long> {
     private Boolean deleted;
 }
 
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserQuery extends PageQuery {
     private Long idGt;
     private List<Long> idIn;
@@ -99,9 +102,13 @@ public class UserQuery extends PageQuery {
     @Subquery(select = "avg(score)", from = UserEntity.class)
     private UserQuery scoreGtAvg;
 }
-```
 
-## 调用示例
+@Bean
+public JdbcDataAccess<UserEntity, Long, UserQuery>
+userDataAccess(@Autowired DatabaseOperations databaseOperations) {
+    return new JdbcDataAccess<>(databaseOperations, UserEntity.class);
+}
+```
 
 ### Get
 
