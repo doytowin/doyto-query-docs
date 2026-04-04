@@ -1,3 +1,0 @@
-# Complex Query
-
-AggregateClient

@@ -1,6 +1,6 @@
 # Patch Object
 
-The framework supports **incremental updates** on numeric fields using special suffixes in the patch object.&#x20;
+DoytoQuery supports **incremental updates** on numeric fields using special suffixes in the patch object.;
 
 ## Suffix Mapping
 
@@ -11,8 +11,6 @@ public class UserPatch extends UserEntity {
     private Integer scoreAe;
 }
 ```
-
-
 
 ```java
 UserEntity userPatch = UserPatch.builder().id(1).valid(true).scoreAe(20).build();

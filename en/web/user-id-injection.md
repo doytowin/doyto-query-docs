@@ -10,10 +10,6 @@ public interface CreateUserAware<I extends Serializable> {
 }
 ```
 
-\
-\
-
-
 ```java
 public interface UpdateUserAware<I extends Serializable> {
 

@@ -1,24 +1,71 @@
 # Subquery Field
 
-For a general subquery,`score > (SELECT avg(score) FROM t_user WHERE deleted = ?)`, is divided into three parts in OQM for mapping:
+For typical subquery conditions, e.g., `score > (SELECT avg(score) FROM t_user WHERE removed = ?)`, is divided into three parts for separate mapping:
 
 * score >
-* SELECT avg(score) FROM t\_user
+* SELECT avg(score) FROM t_user
 * WHERE clause
 
-The first part `score >`can be mapped using the field name `scoreGtXxx`, just like a normal predicate suffix field. The string defined after the predicate suffix is ​​only used to distinguish duplicate field names and will be ignored during mapping.
+The first part, score >, can be mapped using a field name like scoreGtXxx.
+The string defined after the predicate suffix is only used to distinguish duplicate field names and is ignored during mapping.
 
-The second part contains one column name and a table name and won't change, therefore, GoooQo defines a tag `subquery` to save this information.
+The second part contains a column name and a table name, which are static and unchanging. DoytoQuery provides two annotations to store this information:
 
-The second part contains a column and a table name, which are static and unchanging. GoooQo provides two tags to save this information: One is `subquery`, which is used to define the native subquery statement; The other is the combination of the tags `select` and `from`, which save the column name and table name respectively.
+- `@Subquery` defines the column and table for the subquery statement;
+- `@SubqueryV2` defines a view object, which is used in combination with field values to generate the subquery statement.
 
-The third part is another WHERE clause, which can be mapped through a query object. Therefore, we define the field type as the corresponding query object and map the value to the WHERE clause in the subquery through the query object mapping method.
+The third part is another WHERE clause, which can be mapped through a Query Object.
+Therefore, we define the field type as the corresponding Query Object and use the Query Object’s mapping method to map field values into the subquery’s WHERE clause.
 
-Here are some examples of subquery field definitions (since v0.2.0):
+## Example
 
-```go
-ScoreLtAvg *UserQuery `subquery:"select avg(score) from User"`
-ScoreLtAny *UserQuery `subquery:"SELECT score FROM User"`
-ScoreLtAll *UserQuery `subquery:"select score from User"`
-ScoreGtAvg *UserQuery `select:"avg(score)" from:"User"`
+**Annotation `@Subquery`：**
+
+```java
+@SuperBuilder
+@NoArgsConstructor
+public class UserQuery extends PageQuery {
+    // ...
+    
+    @Subquery(select = "avg(score)", from = UserEntity.class)
+    private UserQuery scoreLtAvg;
+
+    @Subquery(select = "score", from = UserEntity.class)
+    private UserQuery scoreLtAny;
+
+    @Subquery(select = "score", from = UserEntity.class)
+    private UserQuery scoreLtAll;
+
+    @Subquery(select = "avg(score)", from = UserEntity.class)
+    private UserQuery scoreGtAvg;
+}
+```
+
+**Annotation `@SubqueryV2`：**
+
+```java
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class MinimumCostSupplierQuery extends PageQuery {
+    private Integer p_size;
+    private String p_typeEnd;
+    private String r_name;
+    
+    // Subquery comdition: ps_supplycost = SELECT min(ps_supplycost) FROM partsupp, supplier, nation, region WHERE ...
+    @SubqueryV2(MinSupplyCostView.class)
+    private SupplyCostQuery psSupplycost;
+
+    @View(value = PartEntity.class, context = true)
+    @View(PartsuppEntity.class)
+    @View(SupplierEntity.class)
+    @View(NationEntity.class)
+    @View(RegionEntity.class)
+    private static class MinSupplyCostView {
+        @NoLabel
+        private Integer minPs_supplycost;
+    }
+}
 ```

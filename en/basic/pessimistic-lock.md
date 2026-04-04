@@ -1,6 +1,6 @@
 # Pessimistic lock
 
-## Shared lock&#x20;
+## Shared lock;
 
 To acquire a **shared lock** on the queried rows, assign `PESSIMISTIC_READ` to the `lockMode` field of the `PageQuery` class. This will generate an SQL statement with a `FOR SHARE` clause, allowing other transactions to read the same rows but preventing them from updating or deleting them until the current transaction is complete.
 

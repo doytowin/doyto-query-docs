@@ -13,7 +13,7 @@
 {% endcontent-ref %}
 
 {% content-ref url="e-r-query-field.md" %}
-[e-r-query-field.md](e-r-query-field.md)
+[e-r-query-field.md](er-query-field.md)
 {% endcontent-ref %}
 
 {% content-ref url="custom-condition-field.md" %}

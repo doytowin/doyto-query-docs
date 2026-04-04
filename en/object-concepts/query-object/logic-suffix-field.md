@@ -1,52 +1,73 @@
-# Logic-Suffix Field
+# Logical Suffix Fields
 
-By default, the query conditions corresponding to the fields of the query object are connected by AND in GoooQo.
+By default, the query conditions corresponding to each field in a query object are connected with the **AND** operator.  
+If you want to define query conditions connected with the **OR** operator, you need to define the suffix **`Or`** in the field name, and the following three field types are supported:
 
-If we want to use the logical operator OR to connect the query conditions, we need to define a struct or array with the suffix Or in the query object.
-
-GoooQo supports the following three definitions:
-
-```go
-type UserQuery struct {
-	PageQuerygo
-	//...
-	NameStartOr *[]string
-	UserOr      *UserQuery
-	UsersOr     *[]UserQuery
+```java
+public class UserQuery extends PageQuery {
+    // ...
+    private List<String> nameStartOr;
+    private UserQuery userOr;
+    private List<UserQuery> usersOr;
 }
 ```
 
-#### NameStartOr \*\[]string
+### List\<String\> nameStartOr;
 
-```go
-userQuery := UserQuery{NameStartOr: &[]string{"Bob", "John", "Tim"}}
-users, err := userDataAccess.Query(ctx, userQuery)
+```java
+UserQuery userQuery = UserQuery.builder().nameStartOr(List.of("Bob","John","Tim")).build();
+List<UserEntity> users = userDataAccess.query(userQuery);
 // SQL="SELECT id, name, score, memo, deleted FROM t_user 
 // WHERE (name LIKE ? OR name LIKE ? OR name LIKE ?)" args="[Bob% John% Tim%]"
 ```
 
-#### UserOr \*UserQuery
+### UserQuery userOr;
 
-```go
-userQuery := UserQuery{UserOr: &UserQuery{IdIn: &[]int64{1, 4, 12}, Deleted: P(true)}}
-users, err := userDataAccess.Query(ctx, userQuery)
+```java
+UserQuery userQuery = UserQuery.builder().nameStartOr(Arrays.asList(1, 4, 12)).deleted(trur).build();
+List<UserEntity> users = userDataAccess.query(userQuery);
 // SQL="SELECT id, name, score, memo, deleted FROM t_user 
 // WHERE (id IN (?, ?, ?) OR deleted = ?)" args="[1 4 12 true]"
 ```
 
-#### UsersOr \*\[]UserQuery
+### List\<UserQuery> usersOr;
 
-```go
-userQuery := UserQuery{UsersOr: &[]UserQuery{
-	{IdIn: &[]int64{1, 4, 12}, Deleted: P(true)},
-	{IdGt: P(int64(10)), Deleted: P(false)},
-}}
-users, err := userDataAccess.Query(ctx, userQuery)
+```java
+UserQuery userQuery = UserQuery.builder()
+    .usersOr(List.of(
+        UserQuery.builder().idIn(List.of(1L, 4L, 12L)).deleted(true).build(),
+        UserQuery.builder().idGt(10L).deleted(false).build()
+    )).build();
+List<UserEntity> users = userDataAccess.query(userQuery);
 // SQL="SELECT id, name, score, memo, deleted FROM t_user
 // WHERE (id IN (?, ?, ?) AND deleted = ? OR id > ? AND deleted = ?)"
 // args="[1 4 12 true 10 false]"
 ```
 
-Check:
+## And Suffix
 
-[https://blog.doyto.win/post/goooqo-or-clause-en/](https://blog.doyto.win/post/goooqo-or-clause-en/)
+When a field name ends with **`And`**, the logical operator connecting multiple query conditions is **AND**.
+
+```java
+public class UserQuery extends PageQuery {
+    // ...
+    private UserQuery userOr;
+    private UserQuery userAnd;
+}
+```
+
+### UserAnd \*UserQuery
+
+```java
+UserQuery userAnd = UserQuery.builder().idIn(List.of(1L, 4L, 12L)).deleted(false).build();
+UserQuery userOr = UserQuery.builder().deleted(true).userAnd(userAnd).build();
+UserQuery userQuery = UserQuery.builder().scoreLt(80).userOr(userOr).build();
+List<UserEntity> users = userDataAccess.query(userQuery);
+// SQL="SELECT id, name, score, memo, deleted FROM t_user
+// WHERE score < ? AND (deleted = ? OR id IN (?, ?, ?) AND deleted = ?)"
+// args="[80 true 1 4 12 false]"
+```
+
+### Related Article
+
+[How to express `select * from user where id = ? or name = ? and age = ?` in GoooQo](https://blog.doyto.win/post/goooqo-or-clause-en/)
