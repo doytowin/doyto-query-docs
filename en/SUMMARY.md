@@ -21,7 +21,7 @@
   * [Column Mapping](object-concepts/view-object/column-mapping.md)
   * [Group By Mapping](object-concepts/view-object/group-by.md)
   * [Inner Join](object-concepts/view-object/inner-join.md)
-  * [Outer Join](object-concepts/view-object/outer-join)
+  * [Outer Join](object-concepts/view-object/outer-join.md)
 * [Having Object](object-concepts/having-object.md)
 
 ## Basic Usage <a href="#basic" id="basic"></a>
@@ -44,8 +44,9 @@
 
 ## Configuration
 
+* [Name Mapping](config/name-mapping.md)
 * [Dialect](config/dialect.md)
-* [SQL Logging](config/sql-logging)
+* [SQL Logging](config/sql-logging.md)
 
 ## Related Resources <a href="#related-resources" id="related-resources"></a>
 
